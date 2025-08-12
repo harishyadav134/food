@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JYOTHISH TASTES - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
+          crossorigin="anonymous">
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        
+        html {
+            background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+        }
+
+        
+        body {
+            background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%); /* Soft sky-blue gradient */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            color: #263238;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+
+        .wave-bg {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(2, 136, 209, 0.3)" d="M0,160L48,170.7C96,181,192,203,288,192C384,181,480,139,576,138.7C672,139,768,181,864,181.3C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            animation: wave 10s linear infinite;
+            z-index: -2;
+        }
+
+        .wave-bg::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(79, 195, 247, 0.2)" d="M0,96L48,106.7C96,117,192,139,288,160C384,181,480,203,576,192C672,181,768,139,864,138.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,128L1440,117L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            animation: wave 15s linear infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1440px); }
+        }
+
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #0288d1 1px, transparent 1px);
+            background-size: 25px 25px;
+            z-index: -3;
+            opacity: 0.5;
+            animation: sparkle 12s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.3; }
+        }
+
+        
+        .login-box {
+            max-width: 400px;
+            width: 100%;
+            margin: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: popIn 1.2s ease-out;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, transparent 20%);
+            animation: rotateGlow 15s linear infinite;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(30px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-box .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 25px;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
+            filter: drop-shadow(0 0 8px rgba(2, 136, 209, 0.6));
+        }
+
+        .login-box .logo:hover {
+            transform: rotate(5deg) scale(1.1);
+            filter: drop-shadow(0 0 12px rgba(2, 136, 209, 0.8));
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+        }
+
+        .login-box h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1565c0;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 25px;
+            position: relative;
+            text-shadow: 0 0 8px rgba(21, 101, 192, 0.5);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .login-box h2::after {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #0288d1, #4fc3f7);
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .login-box:hover h2::after {
+            width: 180px;
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.6);
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateX(-30px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 4px;
+            height: 50%;
+            background: linear-gradient(to bottom, #0288d1, #4fc3f7);
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-group:hover::before {
+            opacity: 1;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(2, 136, 209, 0.5);
+            border-radius: 8px;
+            color: #263238;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.6), inset 0 0 4px rgba(76, 175, 80, 0.3);
+            transform: scale(1.03);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control::placeholder {
+            color: rgba(38, 50, 56, 0.5);
+            transition: opacity 0.3s ease;
+        }
+
+        .form-control:focus::placeholder {
+            opacity: 0.7;
+        }
+
+        .btn-login {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #4caf50, #81c784);
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn-login:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-login:hover::after {
+            left: 100%;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(to right, #81c784, #4caf50);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .form-text {
+            margin-top: 20px;
+            color: #263238;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .form-text a {
+            color: #0288d1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .form-text a:hover {
+            color: #4caf50;
+            text-decoration: underline;
+            text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.5), 0 0 20px rgba(129, 199, 132, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.8), 0 0 40px rgba(129, 199, 132, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.5), 0 0 20px rgba(129, 199, 132, 0.3);
+            }
+        }
+
+        
+        @media (max-width: 768px) {
+            .login-box {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            .login-box .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .login-box h2 {
+                font-size: 1.8rem;
+            }
+
+            .form-control {
+                padding: 12px;
+                font-size: 0.95rem;
+            }
+
+            .btn-login {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            .form-text {
+                font-size: 0.9rem;
+            }
+
+            .wave-bg {
+                height: 40%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .login-box {
+                padding: 15px;
+            }
+
+            .login-box .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .login-box h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-control {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .btn-login {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .form-text {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="wave-bg"></div>
+
+    
+    <div class="login-box">
+        <img th:src="@{/images/logo.png}" src="../static/images/logo.png" class="logo" alt="JYOTHISH TASTES"/>
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="*******">
+            </div>
+            <button type="submit" class="btn-login">Login</button>
+            <p class="form-text">Don't have an account? <a href="/register">Register here</a></p>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JYOTHISH TASTES - Place Order</title>
+    <meta name="description" content="Place your order at JYOTHISH TASTES for delicious culinary products. Enter your details to complete your purchase.">
+    <meta name="keywords" content="JYOTHISH TASTES, place order, food, purchase">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1e3a8a; 
+            --accent-color: #2563eb; 
+            --accent-hover: #1e40af; 
+            --gradient-bg: linear-gradient(135deg, #1e3a8a, #2563eb, #7dd3fc); 
+            --navbar-bg: #1e3a8a; 
+            --navbar-hover: #172554; 
+            --white: #ffffff; 
+            --text-color: #1f2937; 
+            --border-color: #e5e7eb; 
+            --error-color: #dc2626;
+            --success-color: #16a34a; 
+            --secondary-accent: #ec4899; 
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.15); 
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            --fast-transition: all 0.2s ease; 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat fixed, #e0f7fa;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-color);
+            line-height: 1.8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(224, 247, 250, 0.3));
+            animation: fade 12s ease-in-out infinite;
+            z-index: -1;
+        }
+
+
+        .navbar {
+            background: var(--navbar-bg);
+            width: 100vw;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 1.5s ease-in;
+        }
+
+        .navbar.scrolled {
+            background: linear-gradient(90deg, var(--navbar-bg), var(--navbar-hover));
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            transform: scale(1.01);
+        }
+
+        .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+        }
+
+        .navbar-brand img {
+            width: 100px;
+            height: 100px;
+            transition: var(--transition);
+            transform: scale(1);
+            filter: brightness(1);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.2) rotate(10deg);
+            filter: brightness(1.3) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            margin-left: auto;
+        }
+
+        .nav-item:nth-child(1) .nav-link { animation: slideInRight 0.6s ease-in 0.2s both; }
+        .nav-item:nth-child(2) .nav-link { animation: slideInRight 0.6s ease-in 0.4s both; }
+        .nav-item:nth-child(3) .nav-link { animation: slideInRight 0.6s ease-in 0.6s both; }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            transition: var(--fast-transition);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--secondary-accent);
+            transition: width 0.4s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-accent);
+            transform: translateY(-4px) scale(1.05);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            color: var(--accent-color);
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+        }
+
+        .navbar-toggler {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--white);
+            cursor: pointer;
+            transition: var(--fast-transition);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        .navbar-toggler:hover {
+            color: var(--secondary-accent);
+            transform: rotate(90deg) scale(1.2);
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .navbar-nav.active {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--navbar-bg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.5s ease-out;
+            width: 100vw;
+            align-items: center;
+        }
+
+        
+        .form-container {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 2.5rem;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .form-container:hover {
+           
+            
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-bg);
+            animation: slideBorder 3s ease infinite;
+        }
+
+        .form-container h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--gradient-bg);
+            
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 2s ease-in-out infinite alternate;
+            position: relative;
+            padding-left: 2.5rem;
+        }
+
+        .form-container h2::before {
+            content: "\f805";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 50%;
+          
+            
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            
+        }
+
+        .form-container h2:hover::before {
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.6rem;
+            transition: var(--fast-transition);
+        }
+
+        .form-group label:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.4rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #f8fafc;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+            background: var(--white);
+            transform: scale(1.02);
+        }
+
+        .form-control::placeholder {
+            color: #6b7280;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-control:focus::placeholder {
+            opacity: 0.4;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            max-height: 220px;
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: 0.6rem;
+            animation: shake 0.4s ease;
+            background: rgba(220, 38, 38, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .btn {
+            background: var(--gradient-bg);
+            color: var(--white);
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--accent-hover), #60a5fa, var(--secondary-accent));
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            animation: bounceIn 0.3s ease;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Animations */
+        @keyframes fade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-6px); }
+        }
+
+        @keyframes slideBorder {
+            0% { transform: scaleX(0); }
+            50% { transform: scaleX(1); }
+            100% { transform: scaleX(0); }
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 5px rgba(37, 99, 235, 0.5); }
+            to { text-shadow: 0 0 15px rgba(37, 99, 235, 0.8); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1.03); }
+        }
+
+        
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+
+            .navbar {
+                padding: 0;
+            }
+
+            .container-fluid {
+                padding: 0.8rem 15px;
+            }
+
+            .navbar-nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--navbar-bg);
+                padding: 2rem;
+                box-shadow: var(--shadow);
+                animation: slideIn 0.5s ease-out;
+                align-items: center;
+                width: 100vw;
+            }
+
+            .navbar-nav.active {
+                display: flex;
+            }
+
+            .navbar-toggler {
+                display: block;
+            }
+
+            .form-container {
+                margin: 2rem 1rem;
+                padding: 2rem;
+            }
+
+            .form-container h2 {
+                font-size: 1.8rem;
+                padding-left: 2rem;
+            }
+
+            .form-container h2::before {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .form-control {
+                font-size: 0.95rem;
+            }
+
+            .form-group label {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .container-fluid {
+                padding: 0.6rem 10px;
+            }
+
+            .navbar-toggler {
+                font-size: 1.5rem;
+            }
+
+            .form-container h2 {
+                font-size: 1.6rem;
+                padding-left: 1.8rem;
+            }
+
+            .form-container h2::before {
+                font-size: 1.1rem;
+            }
+
+            .form-control {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.8rem;
+                font-size: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.95rem;
+            }
+        }
+
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/images/logo.png}" src="../static/images/logo.png" width="100" height="100" alt="JYOTHISH TASTES Logo" aria-label="JYOTHISH TASTES Home"/>
+            </a>
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}" aria-label="Go to Home page"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/shop}" aria-label="Go to Shop page"><i class="fas fa-shopping-cart"></i> Shop</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin}" aria-label="Go to Admin page"><i class="fas fa-user-shield"></i> Admin</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    
+    <div class="form-container">
+        <h2>Enter Your Details to Buy Now</h2>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+        <form th:action="@{/submitOrder}" th:object="${order}" method="post" aria-live="polite">
+            <div class="form-group">
+                <label for="fullname">Full Name:</label>
+                <input type="text" th:field="*{fullname}" id="fullname" class="form-control" required placeholder="Enter your full name" aria-label="Full Name"/>
+                <div th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="mobilenumber">Mobile Number:</label>
+                <input type="text" th:field="*{mobilenumber}" id="mobilenumber" class="form-control" required placeholder="Enter your mobile number" pattern="\d{10}" aria-label="Mobile Number"/>
+                <div th:if="${#fields.hasErrors('mobilenumber')}" th:errors="*{mobilenumber}" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" th:field="*{email}" id="email" class="form-control" required placeholder="Enter your email" aria-label="Email Address"/>
+                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea th:field="*{address}" id="address" class="form-control" required placeholder="Enter your address" aria-label="Address"></textarea>
+                <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" th:field="*{quantity}" id="quantity" class="form-control" required min="1" value="1" placeholder="Enter quantity" aria-label="Quantity"/>
+                <div th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="error"></div>
+            </div>
+            <input type="hidden" th:field="*{productId}" th:value="${param.productId}"/>
+            <input type="hidden" th:field="*{productName}" th:value="${param.productName}"/>
+            <button type="submit" class="btn" th:aria-label="'Place Order for ' + ${productNameForLabel}"><i class="fas fa-check"></i> Place Order</button>
+        </form>
+    </div>
+
+    
+    <script>
+        
+        document.querySelector('.navbar-toggler').addEventListener('click', () => {
+            const nav = document.querySelector('.navbar-nav');
+            nav.classList.toggle('active');
+            const toggler = document.querySelector('.navbar-toggler');
+            toggler.setAttribute('aria-expanded', nav.classList.contains('active'));
+        });
+
+        
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+    
+        document.querySelector('form').addEventListener('submit', (e) => {
+            const quantity = document.getElementById('quantity').value;
+            const mobilenumber = document.getElementById('mobilenumber').value;
+            if (quantity < 1) {
+                e.preventDefault();
+                alert('Quantity must be at least 1.');
+            }
+            if (!/^\d{10}$/.test(mobilenumber)) {
+                e.preventDefault();
+                alert('Mobile number must be exactly 10 digits.');
+            }
+        });
+    </script>
+</body>
+</html>

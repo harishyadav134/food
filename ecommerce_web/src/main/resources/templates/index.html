@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras springsecurity3">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Harish admin- Product Management</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --gradient-bg: linear-gradient(135deg, #3b82f6, #60a5fa);
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --error-color: #dc2626;
+            --error-hover: #b91c1c;
+            --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --fast-transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+
+
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+
+            background-color: rgb(244, 202, 151)
+        }
+
+
+        .navbar {
+            background: rgb(101, 101, 220);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+
+
+        }
+
+        .container-fluid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand img {
+            transition: var(--transition);
+            transform: scale(1);
+            margin-left: -90px;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.1) rotate(3deg);
+            filter: brightness(1.1);
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: aqua;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            transition: var(--fast-transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: var(--gradient-bg);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--fast-transition);
+        }
+
+        .navbar-toggler:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
+
+        .carousel {
+            max-width: 1140px;
+            margin: 2.5rem auto;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+
+        }
+
+        .carousel-inner {
+            display: flex;
+            width: 100%;
+            position: relative;
+        }
+
+        .carousel-item {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .carousel-item.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 16px;
+            transition: transform 0.5s ease, filter 0.3s ease;
+        }
+
+        .carousel-item img:hover {
+            transform: scale(1.08);
+            filter: brightness(1.05);
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--gradient-bg);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+            background: linear-gradient(135deg, var(--accent-hover), #60a5fa);
+        }
+
+        .carousel-control-prev {
+            left: 1.5rem;
+        }
+
+        .carousel-control-next {
+            right: 1.5rem;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            list-style: none;
+        }
+
+        .carousel-indicators li {
+            width: 14px;
+            height: 14px;
+            background-color: var(--white);
+            border-radius: 50%;
+            margin: 0 0.6rem;
+            cursor: pointer;
+            transition: var(--transition);
+            transform: scale(1);
+        }
+
+        .carousel-indicators li.active {
+            background: var(--gradient-bg);
+            transform: scale(1.2);
+        }
+
+        .carousel-indicators li:hover {
+            transform: scale(1.2);
+            background: var(--accent-color);
+        }
+
+
+        .container {
+            max-width: 1280px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .header-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            background: var(--gradient-bg);
+
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            background: var(--gradient-bg);
+            color: var(--white);
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--accent-hover), #93c5fd);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .btn-outline-danger {
+            background: transparent;
+            color: var(--error-color);
+            border: 2px solid var(--error-color);
+            transition: var(--transition);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--error-color);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .btn-outline-info {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .btn-outline-info:hover {
+            background: var(--accent-color);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            background: var(--white);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--fast-transition);
+        }
+
+        .table th {
+            background: var(--gradient-bg);
+            color: var(--white);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table tr {
+            transition: var(--transition);
+        }
+
+        .table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-2px);
+        }
+
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                padding: 1.5rem;
+                box-shadow: var(--shadow);
+                animation: slideIn 0.3s ease-out;
+            }
+
+            .navbar-nav.active {
+                display: flex;
+            }
+
+            .navbar-toggler {
+                display: block;
+            }
+
+            .carousel-item img {
+                height: 350px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .table th,
+            .table td {
+                font-size: 0.95rem;
+                padding: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .carousel-item img {
+                height: 250px;
+            }
+
+            .header-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.95rem;
+            }
+
+            .carousel-control-prev,
+            .carousel-control-next {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/images/logo.png}" src="../static/images/logo.png" width="120" height="90" alt="Harish"
+                    />
+            </a>
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/shop}">Shop</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/admin}">Admin</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div id="carouselExampleIndicators" class="carousel">
+        <ul class="carousel-indicators">
+            <li data-slide-to="0" class="active"></li>
+            <li data-slide-to="1"></li>
+            <li data-slide-to="2"></li>
+            <li data-slide-to="3"></li>
+        </ul>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="images/image3.jpg" alt="Slide 1">
+            </div>
+            <div class="carousel-item">
+                <img src="images/image2.jpg" alt="Slide 2">
+            </div>
+            <div class="carousel-item">
+                <img src="images/image4.jpg" alt="Slide 3">
+            </div>
+            <div class="carousel-item">
+                <img src="images/image5.jpg" alt="Slide 4">
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+
+    <div class="container">
+        <div class="header-section">
+            <h2>Product Management</h2>
+            <a th:href="@{/admin/products/add}" class="btn">
+                <i class="fas fa-plus"></i> Add Product
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Delete</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product, iStat : ${products}">
+                        <td th:text="${iStat.index + 1}">1</td>
+                        <td th:text="${product.name}">Example Product</td>
+                        <td th:text="${product.price}">$99.99</td>
+                        <td th:text="${product.category.name}">Example Category</td>
+                        <td>
+                            <a th:href="@{/admin/products/delete/{id}(id=${product.id})}"
+                                class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/products/update/{id}(id=${product.id})}"
+                                class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-edit"></i> Update
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        const indicators = document.querySelectorAll('.carousel-indicators li');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                indicators[i].classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                    indicators[i].classList.add('active');
+                }
+            });
+        }
+
+        document.querySelector('.carousel-control-prev').addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        });
+
+        document.querySelector('.carousel-control-next').addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        });
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }, 2500);
+
+
+        document.querySelector('.navbar-toggler').addEventListener('click', () => {
+            document.querySelector('.navbar-nav').classList.toggle('active');
+        });
+
+
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+
+</html>

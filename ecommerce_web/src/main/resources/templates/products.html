@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JYOTHISH TASTES - Manage Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --accent-color: #2563eb;
+            --secondary-accent: #ec4899;
+            --navbar-bg: #1e3a8a;
+            --navbar-hover: #172554;
+            --white: #ffffff;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --fast-transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat fixed, #e0f7fa;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(224, 247, 250, 0.3));
+            animation: fade 12s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--navbar-bg), var(--navbar-hover));
+            padding: 15px 0;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            animation: fadeInDown 1.5s ease-in;
+            width: 100vw;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container-fluid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar-brand img {
+            width: 100px;
+            height: 100px;
+            transition: var(--transition);
+            transform: scale(1);
+            filter: brightness(1);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.2) rotate(10deg);
+            filter: brightness(1.3) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin-left: auto;
+        }
+
+        .nav-item:nth-child(1) .nav-link { animation: slideInRight 0.6s ease-in 0.2s both; }
+
+        .nav-item .nav-link {
+            color: var(--white);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            transition: var(--fast-transition);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--secondary-accent);
+            transition: width 0.4s ease;
+        }
+
+        .nav-item .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-item .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary-accent);
+            transform: translateY(-4px) scale(1.05);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.7s ease-out;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-section h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            position: relative;
+        }
+
+        .header-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6f61, #ffb88c);
+            border-radius: 2px;
+            animation: underlineExpand 0.5s ease;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6f61, #ffb88c);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #ffb88c, #ff6f61);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.4);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .table thead {
+            background: linear-gradient(90deg, #2a5298, #1e3c72);
+            color: #fff;
+        }
+
+        .table th {
+            padding: 15px;
+            font-weight: 500;
+            text-align: left;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .table tbody tr {
+            background: #fff;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .table tbody tr:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .table td, .table th {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .image-container {
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.2);
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 20px;
+        }
+
+        .btn-outline-danger {
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            background: transparent;
+        }
+
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-info {
+            border: 2px solid #17a2b8;
+            color: #17a2b8;
+            background: transparent;
+        }
+
+        .btn-outline-info:hover {
+            background: #17a2b8;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes underlineExpand {
+            from { width: 0; }
+            to { width: 50px; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+
+            .container-fluid {
+                padding: 0 15px;
+            }
+
+            .navbar-nav {
+                display: flex;
+                flex-direction: row;
+                gap: 1.5rem;
+                width: auto;
+                margin-left: auto;
+            }
+
+            .nav-item .nav-link {
+                padding: 0.8rem 15px;
+                font-size: 0.95rem;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-section .btn {
+                margin-top: 15px;
+            }
+
+            .table th, .table td {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .image-container {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container-fluid {
+                padding: 0 10px;
+            }
+
+            .nav-item .nav-link {
+                padding: 0.6rem 10px;
+                font-size: 0.9rem;
+            }
+
+            .navbar-brand img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/images/logo.png}" src="../static/images/logo.png" width="100" height="100" alt="JYOTHISH TASTES">
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h2>Manage Products</h2>
+            <a th:href="@{/admin/products/add}" class="btn">
+                <i class="fas fa-plus"></i> Add Product
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">SN</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Delete</th>
+                        <th scope="col">Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product, iStat : ${products}">
+                        <th scope="row" th:text="${iStat.index + 1}">1</th>
+                        <td th:text="${product.name}">Product Name</td>
+                        <td th:text="${product.category.name}">Category</td>
+                        <td>
+                            <div class="image-container">
+                                <img th:src="@{'/productImages/' + ${product.imageName}}" src="/productImages/sample.jpg"
+                                     alt="Product Image">
+                            </div>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/product/delete/{id}(id=${product.id})}" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/product/update/{id}(id=${product.id})}" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-edit"></i> Update
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
